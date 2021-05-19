@@ -10,11 +10,13 @@ It is particularly useful because :
 
 ### Installation :
 1. Be sure you have `python3` and `numpy` installed
-2. Clone this repo
+2. Clone this repo and then run `diff-with-tol.py`
 
 ### Usage : 
 For a file with `N` columns, the format is :
+
 `python diff-with-tol.py <file1> <file2> <sep> [tol1,tol2,...,tolN]`
+
 Where : 
 1. `file1` and `file1` are input files
 2. `<sep>` is the field seperator, typically things like ',' or ' ' or ';'
