@@ -65,6 +65,7 @@ def main():
     ### Timing info
     print("Started : %s"%(time.strftime("%D:%H:%M:%S")))
     startTime = time.time()
+    isSame = True
 
     ### Get arguments
     f1path = sys.argv[1]    # path to file 1
@@ -72,6 +73,7 @@ def main():
     sep    = sys.argv[3]    # separator, a string
     if(len(sys.argv) == 5):
         tolL = sys.argv[4].split(',')  # A list
+        tolL = [float(tol) for tol in tolL]
     else:
         tolL = []
     
@@ -82,23 +84,35 @@ def main():
     data2L = []
     f1 = open(f1path, "r")
     f2 = open(f2path, "r")
+    # File 1
     for line in f1:
-        lineL = line.split(sep)
+        # Remove new line characters
+        line = line.strip()
+        # Strip extra seperators
+        lineL = [elem.strip(sep) for elem in line.split(sep)]
+        # Remove empty elements
+        lineL = [elem for elem in lineL if len(elem) > 0]
         N1    = len(lineL)
         for i in range(N1):
             try : 
                 lineL[i] = float(lineL[i])
-            except ValueError ;
+            except ValueError :
                 lineL[i] = str(lineL[i])
         data1L.append(lineL)
 
+    # File 2
     for line in f2:
-        lineL = line.split(sep)
+        # Remove new line characters
+        line = line.strip()
+        # Strip extra seperators
+        lineL = [elem.strip(sep) for elem in line.split(sep)]
+        # Remove empty elements
+        lineL = [elem for elem in lineL if len(elem) > 0]
         N2    = len(lineL)
         for i in range(N2):
             try : 
                 lineL[i] = float(lineL[i])
-            except ValueError ;
+            except ValueError :
                 lineL[i] = str(lineL[i])
         data2L.append(lineL)
 
@@ -113,33 +127,41 @@ def main():
         line1L = data1L[i]
         line2L = data2L[i]
         # Element should be the same size
-        if(len(line1) != len(line2):
-            exit_with_error("ERROR!! Lines {} are NOT the same, {} vs. {}".format(
-                            i,line1, line2))
-        for j in range(len(line1L):
+        if(len(line1L) != len(line2L)):
+            print("line {} : {} vs. {}\n".format(i,line1L, line2L))
+            isSame = False
+        for j in range(len(line1L)):
             elem1 = line1L[j]
             elem2 = line2L[j]
-            # Are the elements EXACTLY the same?
+            ### Is Tolerance Set?  
             if(len(tolL) == 0):
+                # Are the elements EXACTLY the same?
                 if(elem1 != elem2):
-                    print("The files are different!\n   line {} : {} vs. {}".format(j,
-                          line1L, line2L))
-            # Are the elements within tolerance?
+                    print("line {} : {} != {}".format(i, line1L, line2L))
+                    isSame = False
+            ### Are the elements within tolerance?
             else:
+                rtol = tolL[j]
                 # Float
                 try:
-                    
-                except ValueError:
-
-
-
+                    if(np.isclose(elem1, elem2, rtol=rtol, atol=atol) == False):
+                        print("line {} : {} vs. {}".format(i, line1L, line2L))
+                        isSame = False
+                # 
+                except TypeError:
+                    if(elem1 != elem2):
+                        print("line {} : {} vs. {}".format(i, line1L, line2L))
+                        isSame = False
     f1.close()
     f2.close()
 
 
-    ## Get, set and declare variables
-    print("Ended : %s"%(time.strftime("%D:%H:%M:%S")))
+    print("Ended   : %s"%(time.strftime("%D:%H:%M:%S")))
     print("Run Time : {:.4f} h".format((time.time() - startTime)/3600.0))
+    if(isSame == True):
+        print("\n\nFiles are IDENTICAL")
+    else:
+        print("\n\nFiles are DIFFERENT")
     sys.exit(0)
 
 
