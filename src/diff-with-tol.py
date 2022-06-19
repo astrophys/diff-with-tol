@@ -1,73 +1,51 @@
 # Author : Ali Snedden
 # Date   : 5/14/21
 # License: MIT
-# Notes  : 
-#
-# Background : 
-#       
-# Purpose :
-#   I have two files with numeric values. They aren't exact, but I want to see  
-#   if they are close within a tolerance. The files can have both string AND 
-#   numeric values.
-#   
-# How to Run :
+"""Module that compares two files for identity within a tolerance (if specified).
+
+This module is particulary useful in providing Linux diff-like behavior but
+with the advantage being able to compare two files for identity within a
+particular tolerance. Can handle mixed data with both strings and floats
+"""
 import sys
-import numpy as np
 import time
-import re
 import argparse
-# my code
+import numpy as np
 from error import exit_with_error
 
 
-def main():
+def diff_two_files_with_tol(Path1=None, Path2=None, Sep=None, TolL=None):
     """
-    ARGS:
-        None.
-    DESCRIPTION:
-    RETURN:
-    DEBUG:
-    FUTURE:
+    Compares two files for identity within the tolerance (if specified)
+
+    Args:
+        Path1 : (str) path to file 1
+        Path2 : (str) path to file 2
+        Sep   : (str) separator
+        TolL  : (list of floats) optional, tolerances for each column. E.g. if
+                specified, for a 3 column file would have 3 floats in the list
+
+    Returns:
+        isSame: (bool) if the files are the same or not.
+                If false, prints differences to stdout as well
     """
-    ### Get Command Line Options 
-    parser = argparse.ArgumentParser(description='Compare files that are numerically close but not identical')
-    parser.add_argument('f1path', metavar='file1', type=str, help='first file')
-    parser.add_argument('f2path', metavar='file2', type=str, help='second file')
-    parser.add_argument('sep',    metavar='sep',   type=str, help='Separator, e.g. ","')
-    parser.add_argument('tolL',   metavar='tol',   type=float, nargs="*",
-                        help='Tolerance, if absent look for exact comparison, otherwise pass float for each column')
-    args = parser.parse_args()
-
-    ### Timing info
-    print("Started : %s"%(time.strftime("%D:%H:%M:%S")))
-    startTime = time.time()
-    isSame = True
-
-    ### Get arguments
-    f1path = args.f1path                    # path to file 1
-    f2path = args.f2path                    # path to file 2
-    sep    = args.sep                       # separator, a string
-    if(args.tolL is not None):
-        tolL   = args.tolL                  # List of tolerances
-    else:
-        tolL   = []
-    
     ### Read files
     atol = 1e-10000
     data1L = []
     data2L = []
-    f1 = open(f1path, "r")
-    f2 = open(f2path, "r")
+    f1 = open(Path1, "r")
+    f2 = open(Path2, "r")
+    isSame = True
     # File 1
     for line in f1:
         # Remove new line characters
         line = line.strip()
         # Strip extra seperators
-        lineL = [elem.strip(sep) for elem in line.split(sep)]
+        lineL = [elem.strip(Sep) for elem in line.split(Sep)]
         # Remove empty elements
         lineL = [elem for elem in lineL if len(elem) > 0]
-        N1    = len(lineL)
-        for i in range(N1):
+        n1    = len(lineL)
+        for i in range(n1):
             try :
                 lineL[i] = float(lineL[i])
             except ValueError :
@@ -78,11 +56,11 @@ def main():
         # Remove new line characters
         line = line.strip()
         # Strip extra seperators
-        lineL = [elem.strip(sep) for elem in line.split(sep)]
+        lineL = [elem.strip(Sep) for elem in line.split(Sep)]
         # Remove empty elements
         lineL = [elem for elem in lineL if len(elem) > 0]
-        N2    = len(lineL)
-        for i in range(N2):
+        n2    = len(lineL)
+        for i in range(n2):
             try :
                 lineL[i] = float(lineL[i])
             except ValueError :
@@ -105,31 +83,69 @@ def main():
         for j in range(len(line1L)):
             elem1 = line1L[j]
             elem2 = line2L[j]
-            ### Is Tolerance Set?  
-            if(len(tolL) == 0):
+            ### Is Tolerance Set?
+            if(len(TolL) == 0):
                 # Are the elements EXACTLY the same?
                 if(elem1 != elem2):
                     print("line {} : {} != {}".format(i, line1L, line2L))
                     isSame = False
             ### Are the elements within tolerance?
             else:
-                rtol = tolL[j]
+                rtol = TolL[j]
                 # Float
                 try:
-                    if(np.isclose(elem1, elem2, rtol=rtol, atol=atol) == False):
+                    if(np.isclose(elem1, elem2, rtol=rtol, atol=atol) is False):
                         print("line {} : {} vs. {}".format(i, line1L, line2L))
                         isSame = False
-                # 
                 except TypeError:
                     if(elem1 != elem2):
                         print("line {} : {} vs. {}".format(i, line1L, line2L))
                         isSame = False
     f1.close()
     f2.close()
+    return(isSame)
+
+
+def main():
+    """
+    Prints to stdout whether two files are identical within the tolerance
+
+    Args:
+        None.
+
+    Returns:
+        None
+    """
+    ### Get Command Line Options
+    parser = argparse.ArgumentParser(description='Compare files that are numerically'
+                                                 'close but not identical')
+    parser.add_argument('f1path', metavar='file1', type=str, help='first file')
+    parser.add_argument('f2path', metavar='file2', type=str, help='second file')
+    parser.add_argument('sep',    metavar='sep',   type=str, help='Separator, e.g. ","')
+    parser.add_argument('tolL',   metavar='tol',   type=float, nargs="*",
+                        help='Tolerance, if absent look for exact comparison, otherwise'
+                              'pass float for each column')
+    args = parser.parse_args()
+
+    ### Timing info
+    print("Started : {}".format(time.strftime("%D:%H:%M:%S")))
+    startTime = time.time()
+
+    ### Get arguments
+    f1path = args.f1path                    # path to file 1
+    f2path = args.f2path                    # path to file 2
+    sep    = args.sep                       # separator, a string
+    if(args.tolL is not None):
+        tolL   = args.tolL                  # List of tolerances
+    else:
+        tolL   = []
+
+    isSame = diff_two_files_with_tol(Path1=f1path, Path2=f2path, Sep=sep, TolL=tolL)
+
     # Print timing information
     print("Ended   : %s"%(time.strftime("%D:%H:%M:%S")))
     print("Run Time : {:.4f} h".format((time.time() - startTime)/3600.0))
-    if(isSame == True):
+    if(isSame is True):
         print("\n\nFiles are IDENTICAL")
     else:
         print("\n\nFiles are DIFFERENT")
@@ -138,4 +154,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
