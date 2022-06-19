@@ -10,10 +10,10 @@ It is particularly useful because :
 
 ### Installation :
 1. Be sure you have `python3` and `numpy` installed
-2. git clone https://github.com/astrophys/diff-with-tol.git`
+2. `git clone https://github.com/astrophys/diff-with-tol.git`
 #### To install as a module
-3. python setup.py build`
-4. python setup.py install`
+3. `python setup.py build`
+4. `python setup.py install`
    
 
 ### Usage : 
@@ -28,11 +28,12 @@ Where :
 
 E.g. `python diff-with-tol.py data/dat1.txt data/dat2.txt ' ' 0.09,0.05,0.002`
 
-#### Using as a python module (see steps 3 and 4 in Installation section)
-You can call this directly from Python by doing something like 
+#### Using as a python module 
+See steps 3 and 4 in Installation section. You can call this directly from Python by
+doing something like 
 ```
-import diffwtol as dwt
-dwt.diff_two_files_with_tol("data/diff-col1-f1.txt", "data/diff-col1-f2.txt", ' ', [0.1,0,0])
+>>> import diffwtol as dwt
+>>> dwt.diff_two_files_with_tol("data/diff-col1-f1.txt", "data/diff-col1-f2.txt", ' ', [0.1,0,0])
 ``
 
 
