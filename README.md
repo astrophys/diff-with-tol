@@ -10,9 +10,11 @@ It is particularly useful because :
 
 ### Installation :
 1. Be sure you have `python3` and `numpy` installed
-2. `git clone https://github.com/astrophys/diff-with-tol.git`
-3. `python setup.py build`
-4. `python setup.py install`
+2. git clone https://github.com/astrophys/diff-with-tol.git`
+#### To install as a module
+3. python setup.py build`
+4. python setup.py install`
+   
 
 ### Usage : 
 For a file with `N` columns, the format is :
@@ -25,6 +27,16 @@ Where :
 3. `[tol1,tol2,...,tolN]` is the relative tolerance for each column
 
 E.g. `python diff-with-tol.py data/dat1.txt data/dat2.txt ' ' 0.09,0.05,0.002`
+
+#### Using as a python module (see steps 3 and 4 in Installation section)
+You can call this directly from Python by doing something like 
+```
+import diffwtol as dwt
+dwt.diff_two_files_with_tol("data/diff-col1-f1.txt", "data/diff-col1-f2.txt", ' ', [0.1,0,0])
+``
+
+
+
 
 ### Unit Testing: 
 Ensure current version of code is working as expected by testing each column with
