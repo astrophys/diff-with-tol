@@ -7,41 +7,17 @@
 #       
 # Purpose :
 #   I have two files with numeric values. They aren't exact, but I want to see  
-#   if they are close within a tolerance.
-# 
+#   if they are close within a tolerance. The files can have both string AND 
+#   numeric values.
 #   
 # How to Run :
 import sys
 import numpy as np
 import time
 import re
+import argparse
 # my code
 from error import exit_with_error
-
-
-
-def print_help(Arg):
-    """
-    ARGS:
-        Arg     : int, exit value
-    DESCRIPTION:
-        Print Help. Exit with value arg
-    RETURN:
-        N/A
-    DEBUG:
-        1. Tested, it worked
-    FUTURE:
-    """
-    sys.stdout.write(
-        "\nUSAGE : python diff-with-tol.py <file1> <file2> <sep> [tol1,tol2,...,tolN]\n\n"
-        "   <file1>         : A file to compare, with N columns\n"
-        "   <file2>         : A file to compare, with N columns\n"
-        "   <sep>           : separator e.g. ',', ' '\n"
-        "   [tol1,...,tolN] : optional, the fractional tolerance (rtol) for each N\n"
-        "                     column. Uses np.isclose(rtol, atol=1e-10000).\n"
-        "                     Default : rtol=0\n"
-        "                         \n")
-    sys.exit(Arg)
 
 
 def main():
@@ -53,30 +29,28 @@ def main():
     DEBUG:
     FUTURE:
     """
-    ######### Get Command Line Options ##########
-    if(len(sys.argv) != 4 and len(sys.argv) != 5 and len(sys.argv) != 2) : 
-        print_help(1)
-    elif(len(sys.argv) == 2 and "-h" in sys.argv[1]):
-        print_help(0)
-    # Check python version
-    if(sys.version_info[0] != 3):
-        exit_with_error("ERROR!!! Wrong python version ({}), version 3 "
-                        "expected\n".format(sys.version_info[0]))
+    ### Get Command Line Options 
+    parser = argparse.ArgumentParser(description='Compare files that are numerically close but not identical')
+    parser.add_argument('f1path', metavar='file1', type=str, help='first file')
+    parser.add_argument('f2path', metavar='file2', type=str, help='second file')
+    parser.add_argument('sep',    metavar='sep',   type=str, help='Separator, e.g. ","')
+    parser.add_argument('tolL',   metavar='tol',   type=float, nargs="*",
+                        help='Tolerance, if absent look for exact comparison, otherwise pass float for each column')
+    args = parser.parse_args()
+
     ### Timing info
     print("Started : %s"%(time.strftime("%D:%H:%M:%S")))
     startTime = time.time()
     isSame = True
 
     ### Get arguments
-    f1path = sys.argv[1]    # path to file 1
-    f2path = sys.argv[2]    # path to file 2
-    sep    = sys.argv[3]    # separator, a string
-    if(len(sys.argv) == 5):
-        tolL = sys.argv[4].split(',')  # A list
-        tolL = [float(tol) for tol in tolL]
+    f1path = args.f1path                    # path to file 1
+    f2path = args.f2path                    # path to file 2
+    sep    = args.sep                       # separator, a string
+    if(args.tolL is not None):
+        tolL   = args.tolL                  # List of tolerances
     else:
-        tolL = []
-    
+        tolL   = []
     
     ### Read files
     atol = 1e-10000
@@ -94,12 +68,11 @@ def main():
         lineL = [elem for elem in lineL if len(elem) > 0]
         N1    = len(lineL)
         for i in range(N1):
-            try : 
+            try :
                 lineL[i] = float(lineL[i])
             except ValueError :
                 lineL[i] = str(lineL[i])
         data1L.append(lineL)
-
     # File 2
     for line in f2:
         # Remove new line characters
@@ -110,13 +83,12 @@ def main():
         lineL = [elem for elem in lineL if len(elem) > 0]
         N2    = len(lineL)
         for i in range(N2):
-            try : 
+            try :
                 lineL[i] = float(lineL[i])
             except ValueError :
                 lineL[i] = str(lineL[i])
         data2L.append(lineL)
 
-    
     ### Compare
     # Are they the same length?
     if(len(data1L) != len(data2L)):
@@ -154,8 +126,7 @@ def main():
                         isSame = False
     f1.close()
     f2.close()
-
-
+    # Print timing information
     print("Ended   : %s"%(time.strftime("%D:%H:%M:%S")))
     print("Run Time : {:.4f} h".format((time.time() - startTime)/3600.0))
     if(isSame == True):
