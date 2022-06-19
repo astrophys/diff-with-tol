@@ -34,7 +34,7 @@ doing something like
 ```
 >>> import diffwtol as dwt
 >>> dwt.diff_two_files_with_tol("data/diff-col1-f1.txt", "data/diff-col1-f2.txt", ' ', [0.1,0,0])
-``
+```
 
 
 
