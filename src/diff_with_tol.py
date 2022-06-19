@@ -36,6 +36,11 @@ def diff_two_files_with_tol(Path1=None, Path2=None, Sep=None, TolL=None):
     f1 = open(Path1, "r")
     f2 = open(Path2, "r")
     isSame = True
+    if(TolL is None):
+        tolL = []
+    else:
+        tolL = TolL
+    #print("tolL = {}".format(tolL))
     # File 1
     for line in f1:
         # Remove new line characters
@@ -84,17 +89,17 @@ def diff_two_files_with_tol(Path1=None, Path2=None, Sep=None, TolL=None):
             elem1 = line1L[j]
             elem2 = line2L[j]
             ### Is Tolerance Set?
-            if(len(TolL) == 0):
+            if(len(tolL) == 0):
                 # Are the elements EXACTLY the same?
                 if(elem1 != elem2):
                     print("line {} : {} != {}".format(i, line1L, line2L))
                     isSame = False
             ### Are the elements within tolerance?
             else:
-                rtol = TolL[j]
+                rtol = tolL[j]
                 # Float
                 try:
-                    if(np.isclose(elem1, elem2, rtol=rtol, atol=atol) is False):
+                    if(np.isclose(elem1, elem2, rtol=rtol, atol=atol) == False):
                         print("line {} : {} vs. {}".format(i, line1L, line2L))
                         isSame = False
                 except TypeError:
@@ -103,6 +108,7 @@ def diff_two_files_with_tol(Path1=None, Path2=None, Sep=None, TolL=None):
                         isSame = False
     f1.close()
     f2.close()
+    #print("isSame={}".format(isSame))
     return(isSame)
 
 
