@@ -3,15 +3,12 @@
 # License: MIT
 """Module that unit tests the module diff-with-tol.py:diff_two_files_with_tol()
 
-This module tests the function diff_two_files_with_tol() with several unit 
+This module tests the function diff_two_files_with_tol() with several unit
 cases to ensure the thresholding and string comparison works.
 """
-import sys
 import time
-import argparse
 import unittest
-from error import exit_with_error
-from diff_with_tol import diff_two_files_with_tol
+from diffwtol.diff_with_tol import diff_two_files_with_tol
 
 
 class TEST_DIFF_W_TOL(unittest.TestCase):
@@ -29,7 +26,7 @@ class TEST_DIFF_W_TOL(unittest.TestCase):
         Checks for equality in several cases
 
         Args:
-            self : 
+            self :
 
         Returns:
             N/A
@@ -77,7 +74,6 @@ class TEST_DIFF_W_TOL(unittest.TestCase):
                                          TolL=[0,0,0])
         self.assertEqual(result, False)
 
-        
         ##################################
         ######### STRING TESTING #########
         ##################################

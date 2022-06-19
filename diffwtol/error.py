@@ -19,7 +19,7 @@ def exit_with_error(String):
 
 def warning(String):
     """
-    Prints String to stderr, 
+    Prints String to stderr,
 
     Args:
         String      : string to print then exit
