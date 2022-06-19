@@ -23,3 +23,9 @@ Where :
 3. `[tol1,tol2,...,tolN]` is the relative tolerance for each column
 
 E.g. `python diff-with-tol.py data/dat1.txt data/dat2.txt ' ' 0.09,0.05,0.002`
+
+### Unit Testing: 
+Ensure current version of code is working as expected by testing each column with
+either float or str comparisons.
+
+`python src/unittest_diff_with_tol.py`
