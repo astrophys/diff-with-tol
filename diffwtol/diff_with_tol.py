@@ -11,7 +11,8 @@ import sys
 import time
 import argparse
 import numpy as np
-from error import exit_with_error
+#from error import exit_with_error
+from diffwtol.error import exit_with_error
 
 
 def diff_two_files_with_tol(Path1=None, Path2=None, Sep=None, TolL=None):
