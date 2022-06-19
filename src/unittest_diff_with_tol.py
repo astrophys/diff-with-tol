@@ -10,10 +10,8 @@ import sys
 import time
 import argparse
 import unittest
-#import numpy as np
 from error import exit_with_error
 from diff_with_tol import diff_two_files_with_tol
-
 
 
 class TEST_DIFF_W_TOL(unittest.TestCase):
@@ -99,20 +97,10 @@ class TEST_DIFF_W_TOL(unittest.TestCase):
         result = diff_two_files_with_tol(Path1="data/diff-col3-str-f1.txt",
                                          Path2="data/diff-col3-str-f2.txt", Sep=' ')
         self.assertEqual(result, False)
-                                                
-        
-        
-        
-        
 
 
 if __name__ == "__main__":
     ### Timing info
-    #print("Started : {}".format(time.strftime("%D:%H:%M:%S")))
-    #startTime = time.time()
+    print("Started : {}".format(time.strftime("%D:%H:%M:%S")))
     unittest.main()
-    # Print timing information
-    #print("Ended   : %s"%(time.strftime("%D:%H:%M:%S")))
-    #print("Run Time : {:.4f} h".format((time.time() - startTime)/3600.0))
-    print("poo")
-    sys.exit(0)
+    # Exit value handled by unittest.main()
