@@ -1,0 +1,6 @@
+1.01e-100  3.45e+12  6.73e+03
+foo        bar       9.83e+03
+this       is        the 
+song       that      never
+ends       2.41e+15  9.00
+41         24.5      777
